@@ -9,7 +9,7 @@ const app = require('./app');
 async function start() {
 	const server = await createServer(app);
 
-  server.get('/', (req, res) => {
+  server.get('/main', (req, res) => {
     res.send('Welcome to Holafly\'s Technical test!');
   });
 
