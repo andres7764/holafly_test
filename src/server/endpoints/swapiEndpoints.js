@@ -45,19 +45,26 @@ const applySwapiEndpoints = (server, app) => {
     server.get('/hfswapi/getPeople/:id', async (req, res) => {
         try {
             let idPeople = req.params.id;
-            const data = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/people/${idPeople}`, 'GET', null, false);
-            if(data.detail && data.detail === "Not found") {
-                res.status(404).json(data);
+            let findInBD = await app.db.findPeopleByIdDB(idPeople);
+            console.log(findInBD);
+            if(findInBD != null) {
+                res.status(200).json(findInBD);
             } else {
-                let newPerson = await app.people.peopleFactory(idPeople,'');
-                let homeworld = await app.swapiFunctions.genericRequest(data.homeworld, 'GET',null, false);
-                    newPerson.setHomeworldName(homeworld.name);
-                    newPerson.setName(data.name);
-                    newPerson.setMass(data.mass);
-                    newPerson.setHeight(data.height);
-                    newPerson.setHomeworlId(app.helpers.getPlanetId(data.homeworld));
-                    await app.db.insertDataPeopleDB(newPerson);
-                res.status(200).json(newPerson);
+                console.log("Por aquí");
+                const data = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/people/${idPeople}`, 'GET', null, false);
+                if(data.detail && data.detail === "Not found") {
+                    res.status(404).json(data);
+                } else {
+                    let newPerson = await app.people.peopleFactory(idPeople,'');
+                    let homeworld = await app.swapiFunctions.genericRequest(data.homeworld, 'GET',null, false);
+                        newPerson.setHomeworldName(homeworld.name);
+                        newPerson.setName(data.name);
+                        newPerson.setMass(data.mass);
+                        newPerson.setHeight(data.height);
+                        newPerson.setHomeworlId(app.helpers.getPlanetId(data.homeworld));
+                        await app.db.insertDataPeopleDB(newPerson);
+                    res.status(200).json(newPerson);
+                }
             }
         } catch(err) {
             res.status(500).json({'data': `General error  on query ${req.url} (reason) ${err.message}`});
@@ -144,8 +151,8 @@ const applySwapiEndpoints = (server, app) => {
     */
     server.get('/hfswapi/getLogs',async (req, res) => {
         try {
-            const data = JSON.stringify(await app.db.getLogs());
-            res.status(200).json({'detail': data});
+            const data = await app.db.getLogs();
+            res.status(200).json(data);
         } catch(err) {
             res.status(500).json({'detail':`Error returning logs due to ${err.message}`})
         }

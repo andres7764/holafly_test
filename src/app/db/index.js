@@ -91,8 +91,17 @@ const getLogs = async () => {
   return await db.logging.findAll({});
 }
 
+const findPeopleByIdDB = async (id) => {
+  const value = await db.swPeople.findOne({
+    attributes: ["id","name","mass","height","homeworld_name","homeworld_id"],
+    where: {"id": id}
+  })
+  return value;
+}
+
 db.insertDataPeopleDB = insertDataPeopleDB;
 db.insertDataPlanetDB = insertDataPlanetDB;
+db.findPeopleByIdDB = findPeopleByIdDB;
 db.insertLogDB = insertLogDB;
 db.populateDB = populateDB;
 db.deleteDB = deleteDB;
