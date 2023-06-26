@@ -1,13 +1,11 @@
-
-
 const bodyParser = require('body-parser');
-
 const createServer = require('./server');
 
 const app = require('./app');
 
 async function start() {
 	const server = await createServer(app);
+
 
   server.get('/main', (req, res) => {
     res.send('Welcome to Holafly\'s Technical test!');

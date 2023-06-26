@@ -1,3 +1,4 @@
+const swagger = require("../swagger");
 
 const _isWookieeFormat = (req) => {
     if(req.query.format && req.query.format == 'wookiee'){
@@ -7,6 +8,8 @@ const _isWookieeFormat = (req) => {
 }
 
 const applySwapiEndpoints = (server, app) => {
+
+    swagger(server);
 
     server.get('/hfswapi/test', async (req, res) => {
         const data = await app.swapiFunctions.genericRequest('https://swapi.dev/api/', 'GET', null, true);
@@ -52,7 +55,19 @@ const applySwapiEndpoints = (server, app) => {
             res.status(500).json({'detail': `General error  on query ${req.url} (reason) ${err.message}`});
         }
     });
-
+    /**
+     * @swagger
+     * /hfswapi/getWeightOnPlanetRandom:
+     *   get:
+     *     description: Get two random dates [Peopleid and planetid] and 
+     *     responses:
+     *       200:
+     *         description: Success weight
+     *      501:
+     *          description: Custom rule because the person has the same planet id of the random planet id generated
+     *       500:
+     *         description: Server error inside try catch
+    */
     server.get('/hfswapi/getWeightOnPlanetRandom', async (req, res) => {
         try {
             let randomUser = Math.round(Math.random()*83);
