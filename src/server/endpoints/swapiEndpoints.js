@@ -51,18 +51,31 @@ const applySwapiEndpoints = (server, app) => {
                 res.status(200).json(response);
             }
         } catch(err) {
-            res.status(500).data(`General error  on query ${req.url} (reason) ${err.message}`);
+            res.status(500).json({'detail': `General error  on query ${req.url} (reason) ${err.message}`});
         }
     });
 
     server.get('/hfswapi/getWeightOnPlanetRandom', async (req, res) => {
         try {
             console.log(req.url);
-            let idPeople = req.params.id;
-            const data = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/people/${idPeople}`, 'GET', null, true);
-            res.status(200).json(data);
+            let randomUser = Math.round(Math.random()*83);
+            let randomPlanet = Math.round(Math.random()*60);
+
+            const infoPeople = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/people/${randomUser}`, 'GET', null, false);
+            console.log(parseInt(app.helpers.getPlanetId(infoPeople.homeworld)), "randomdata",randomUser,randomPlanet);
+            if(parseInt(app.helpers.getPlanetId(infoPeople.homeworld)) === randomPlanet) {
+                res.send(501).json({'detail':`You cannot calculate the mass because is the same planet of the ${data.name}`});
+            } else if(infoPeople.mass !== 'unknown') {
+                const infoPlanet = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/planets/${randomPlanet}`, 'GET', null, false);
+                console.log(parseFloat(app.helpers.getGravity(infoPlanet.gravity)),infoPeople,infoPlanet);
+                let weight = parseFloat(app.helpers.getGravity(infoPlanet.gravity)) * parseInt(infoPeople.mass);
+                res.status(200).json({'detail': `The mass of ${infoPeople.name} on ${infoPlanet.name} is ${weight}`});
+            } else {
+                res.status(400).json({'detail': `It's not possible get the mass of person because person ${infoPeople.name} doesn't mass`})
+            }
+
         } catch(err) {
-            res.status(500).data(`General error  on query ${req.url} (reason) ${err.message}`);
+            res.status(500).json({'detail': `General error  on query ${req.url} (reason) ${err.message}`});
         }
     });
 
