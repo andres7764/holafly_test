@@ -5,5 +5,4 @@ const getGravity = (gravityValue) => {
     return base * gravityOfPlanet;
 }
 
-
 module.exports = getGravity;

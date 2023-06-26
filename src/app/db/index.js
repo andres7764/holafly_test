@@ -75,9 +75,29 @@ const watchDB = async () => {
   console.table(people);
 }
 
-db.initDB = initDB;
+const insertDataPlanetDB = async (dataToInsert) => {
+  await db.swPlanet.create(dataToInsert)
+}
+
+const insertDataPeopleDB = async (dataToInsert) => {
+  await db.swPeople.create(dataToInsert);
+}
+
+const insertLogDB = async (logRow) => {
+  await db.logging.create(logRow);
+}
+
+const getLogs = async () => {
+  return await db.logging.findAll({});
+}
+
+db.insertDataPeopleDB = insertDataPeopleDB;
+db.insertDataPlanetDB = insertDataPlanetDB;
+db.insertLogDB = insertLogDB;
 db.populateDB = populateDB;
-db.watchDB = watchDB;
 db.deleteDB = deleteDB;
+db.watchDB = watchDB;
+db.getLogs = getLogs;
+db.initDB = initDB;
 
 module.exports = db;

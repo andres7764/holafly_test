@@ -7,8 +7,8 @@ const peopleFactory = async (id, lang) => {
         people = new WookieePeople(id);
     } else {
         people = new CommonPeople(id);
+        console.log(people);
     }
-    await people.init();
     return people;
 }
 

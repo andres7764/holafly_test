@@ -1,5 +1,12 @@
-class CommonPeople extends AbstractPeople {
+const AbstractPeople = require("./abstractPeople");
+
+class CommonPeople extends AbstractPeople{
+    
     constructor(id){
-        throw new Error("To be implemented");
+        super(id);
+        this.id = id;
+        //throw new Error("To be implemented");
     }
 }
+
+module.exports = CommonPeople;
