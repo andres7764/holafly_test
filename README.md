@@ -65,5 +65,7 @@ El presente código despliega un servidor node.js/express sobre el que se busca 
 > - header: Headers de la llamada almacenados como una cadena de texto plana
 > - ip: Dirección IP desde donde se realiza la llamada
 
+### /api-docs
+> Se agregó las librerías de swagger para poder documentar y acceder mas fácil a los endpoints desarrollados. 
 
 Adicionalmente a estos endpoints, se requiere ampliar el paquete `People` con las clases y funciones que sean necesarias para cubrir el caso de que el formato del objeto retornado por la SWAPI sea en idioma Wookiee.
