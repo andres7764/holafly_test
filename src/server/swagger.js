@@ -9,7 +9,7 @@ const options = {
       version: '1.0.0',
     },
   },
-  apis: ['./endpoints/swapiEndpoints.js'],
+  apis: ['src/server/endpoints/swapiEndpoints.js'],
 };
 
 const specs = swaggerJsDoc(options);

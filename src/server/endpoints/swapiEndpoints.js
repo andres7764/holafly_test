@@ -10,12 +10,38 @@ const _isWookieeFormat = (req) => {
 const applySwapiEndpoints = (server, app) => {
 
     swagger(server);
-
+    /**
+     * @swagger
+     * /hfswapi/test:
+     *   get:
+     *     description: Test query connecting to swapi.dev 
+     *     responses:
+     *      200:
+     *         description: Success data
+    */
     server.get('/hfswapi/test', async (req, res) => {
         const data = await app.swapiFunctions.genericRequest('https://swapi.dev/api/', 'GET', null, true);
         res.send(data);
     });
-
+    
+    /**
+     * @swagger
+     * /hfswapi/getPeople/{id}:
+     *   get:
+     *     description: Get the data from people by id 
+     *     parameters:
+     *     - name: id
+     *       description: people id
+     *       required: true
+     *       type: string
+     *     responses:
+     *      200:
+     *         description: Person data
+     *      404:
+     *         description: People not found
+     *      500:
+     *         description: Server error inside try catch
+    */
     server.get('/hfswapi/getPeople/:id', async (req, res) => {
         try {
             let idPeople = req.params.id;
@@ -37,7 +63,25 @@ const applySwapiEndpoints = (server, app) => {
             res.status(500).json({'data': `General error  on query ${req.url} (reason) ${err.message}`});
         }
     });
-
+    
+    /**
+     * @swagger
+     * /hfswapi/getPlanet/{id}:
+     *   get:
+     *     description: Get planet by id 
+     *     parameters:
+     *     - name: id
+     *       description: planet id
+     *       required: true
+     *       type: string
+     *     responses:
+     *      200:
+     *         description: Success planet
+     *      404:
+     *         description: Planet not found
+     *      500:
+     *         description: Server error inside try catch
+    */
     server.get('/hfswapi/getPlanet/:id', async (req, res) => {
         try {
             let response = {};
@@ -61,11 +105,11 @@ const applySwapiEndpoints = (server, app) => {
      *   get:
      *     description: Get two random dates [Peopleid and planetid] and 
      *     responses:
-     *       200:
+     *      200:
      *         description: Success weight
      *      501:
-     *          description: Custom rule because the person has the same planet id of the random planet id generated
-     *       500:
+     *         description: Custom rule because the person has the same planet id of the random planet id generated
+     *      500:
      *         description: Server error inside try catch
     */
     server.get('/hfswapi/getWeightOnPlanetRandom', async (req, res) => {
@@ -87,10 +131,24 @@ const applySwapiEndpoints = (server, app) => {
             res.status(500).json({'detail': `General error  on query ${req.url} (reason) ${err.message}`});
         }
     });
-
+    /**
+     * @swagger
+     * /hfswapi/getLogs:
+     *   get:
+     *     description: Return logs generated while the app is running
+     *     responses:
+     *      200:
+     *         description: Success logs returned
+     *      500:
+     *         description: Server error inside try catch
+    */
     server.get('/hfswapi/getLogs',async (req, res) => {
-        const data = await app.db.getLogs();
-        res.send(data);
+        try {
+            const data = JSON.stringify(await app.db.getLogs());
+            res.status(200).json({'detail': data});
+        } catch(err) {
+            res.status(500).json({'detail':`Error returning logs due to ${err.message}`})
+        }
     });
 
 }
