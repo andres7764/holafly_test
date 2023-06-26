@@ -46,11 +46,9 @@ const applySwapiEndpoints = (server, app) => {
         try {
             let idPeople = req.params.id;
             let findInBD = await app.db.findPeopleByIdDB(idPeople);
-            console.log(findInBD);
             if(findInBD != null) {
                 res.status(200).json(findInBD);
             } else {
-                console.log("Por aquí");
                 const data = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/people/${idPeople}`, 'GET', null, false);
                 if(data.detail && data.detail === "Not found") {
                     res.status(404).json(data);
