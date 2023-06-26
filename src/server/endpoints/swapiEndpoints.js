@@ -38,11 +38,32 @@ const applySwapiEndpoints = (server, app) => {
     });
 
     server.get('/hfswapi/getPlanet/:id', async (req, res) => {
-        
+        try {
+            let response = {};
+            let idPlanet = req.params.id;
+            const data = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/planets/${idPlanet}`, 'GET', null, true);
+            if(data.detail && data.detail === "Not found") {
+                res.status(404).json(data);
+            } else {
+                console.log(data);
+                response.name = data.name;
+                response.gravity = app.helpers.getGravity(data.gravity);
+                res.status(200).json(response);
+            }
+        } catch(err) {
+            res.status(500).data(`General error  on query ${req.url} (reason) ${err.message}`);
+        }
     });
 
     server.get('/hfswapi/getWeightOnPlanetRandom', async (req, res) => {
-       
+        try {
+            console.log(req.url);
+            let idPeople = req.params.id;
+            const data = await app.swapiFunctions.genericRequest(`https://swapi.dev/api/people/${idPeople}`, 'GET', null, true);
+            res.status(200).json(data);
+        } catch(err) {
+            res.status(500).data(`General error  on query ${req.url} (reason) ${err.message}`);
+        }
     });
 
     server.get('/hfswapi/getLogs',async (req, res) => {
